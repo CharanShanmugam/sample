@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html data-ng-app="sampleApp">
+<head>
+    <meta charset="utf-8">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngDraggable/0.1.11/ngDraggable.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+<style>
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.demo {
+    margin-top:20px;
+}
+[ng-drag] {
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.item {
+    background-color: #14e8b9;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    z-index:10;
+}
+.draggable-objects:after {
+  display: block;
+  content: "";
+  clear: both;
+}
+.draggable-objects .element {
+  list-style: none; 
+}
+
+.synonymn{
+animation-name: motion;
+animation-duration: 10s;
+animation-iteration-count: 100; }
+
+@keyframes motion{
+  0%{
+    
+    transform: translate(25px,25px);
+  };
+  50%{
+    transform: translate(50px,50px);
+  };
+75%{
+    transform: translate(75px,75px);
+  };
+  100%{
+    transform: translate(0,0);
+  };
+
+}
+
+/*[ng-drag].drag-over {
+  border: solid 1px red;
+}*/
+[ng-drag].dragging {
+  z-index:133;
+  opacity: 0.5;
+}
+.drop-container {
+  background: rgba(0, 255, 0, 0.5);
+  text-align: center;
+  width: 600px;
+  height: 200px;
+  padding-top: 90px;
+  display: block;
+  margin: 20px auto;
+  position: relative;
+}
+.drop-input {
+  width: 200px;
+  height: 40px;
+}
+.drag-enter {
+  border: solid 1px red;
+}
+.drop-container span.title {
+  display: block;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 200px;
+  height: 20px;
+  margin-left: -100px;
+  margin-top: -10px;
+}
+.drop-container div {
+  position: relative;
+  z-index: 2;
+}
+.title{
+  text-align: center;
+}
+.elementPos{
+  display:block;
+}
+
+.progress-bar-vertical {
+  width: 20px;
+  min-height: 100px;
+  display: flex;
+  align-items: flex-end;
+  margin-right: 20px;
+  float: left;
+}
+
+.progress-bar-vertical .progress-bar {
+  width: 100%;
+  height: 0;
+  -webkit-transition: height 0.6s ease;
+  -o-transition: height 0.6s ease;
+  transition: height 0.6s ease;
+}
+.container{
+  margin-top: 20px;
+}
+
+@media only screen (min-width: 320px) {
+    .dropArea {
+        min-height: 100px;
+    }
+    .progress-bar-vertical{
+      min-height: 100px;
+    }
+    .container{
+      padding: 0 !important;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .dropArea {
+        min-height: 150px;
+    }
+    .progress-bar-vertical{
+      min-height: 150px;
+    }
+    .section{
+      margin-right: -15px;
+      margin-left: -15px;
+    }
+}
+</style>
+</head>
+
+<body ng-controller = "sampleController">
+<div class="section">
+  <div class="col-xs-12 col-md-10 col-md-offset-1">
+    <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Synonyms</h3>
+                </div>
+
+                <div class="panel-body" ng-drop="true">
+                    <div class="draggable-objects">
+                        <div class="element synonymn btn" ng-repeat="obj in listItems1">
+                            <div ng-drag="true" ng-drag-data="obj" ng-drag-success="onDragComplete2($data,$event,$index,'list3')" data-allow-transform="true" class="item"> {{obj.title}} </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+</div>
+<div class="section">
+    <div class="col-md-offset-2 col-xs-5 col-md-4 demo">
+            <div class="panel panel-info">
+                <div class="panel-body dropArea" ng-drop="true" ng-drop-success="onDropCompleteRemove($data,$event,'list1')">
+                    <div class="draggable-objects">
+                        <div class="element elementPos" ng-repeat="obj in listItems">
+                            <div class="item"> {{obj.title}} </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading" style="background-color: #58a258;color: white;">
+                    <h3 class="panel-title title">Correct</h3>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-xs-5 col-md-4 demo">
+            <div class="panel panel-info">
+                <div class="panel-body dropArea" ng-drop="true" ng-drop-success="onDropComplete($data,$event,'list2')" class="drop-container">
+                    <div class="draggable-objects">
+                        <div class="element elementPos" ng-repeat="obj in droppedObjects">
+                            <div class="item"> {{obj.title}} </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading" style="background-color: #f16363;color: white;">
+                    <h3 class="panel-title title">Wrong</h3>
+                </div>
+            </div>
+        </div>
+        <div class="container col-xs-2">
+          <div class="progress progress-bar-vertical">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="height:{{((maxValue-listItems1.length)/maxValue)*100+'%'}}">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+        </div>       
+        </div>
+
+
+</body>
+
+<script>
+    angular.module('sampleApp', ['ngDraggable'])
+    .controller('sampleController',sampleController);
+
+        sampleController.$inject = ['$scope'];
+
+        function sampleController ($scope) {
+
+            $scope.listItems1 = [{
+                  name: "some name",
+                  title: "Title1ggggggggggggg",
+                  id:1
+                }, {
+                  name: "some name2",
+                  title: "Title2",
+                  id:2
+                }, {
+                  name: "some name3",
+                  title: "Title3",
+                  id:3
+                }, 
+            ];
+
+            $scope.maxValue = angular.copy($scope.listItems1.length);
+
+            $scope.listItems = []
+
+            $scope.droppedObjects = [];
+          
+
+            $scope.onDragComplete2 = function(data, evt,index,area) {
+              $scope.area1 = area
+              $scope.index3 = index;     
+            }
+            
+            $scope.onDropComplete = function(data, evt,dropArea1) {
+                if(!data || dropArea1 == $scope.area1) {
+                    return;
+                }
+              var index = $scope.droppedObjects.indexOf(data);
+              if (index == -1)
+               $scope.droppedObjects.splice(0,0,data);
+               $scope.listItems1.splice($scope.index3,1);
+            }
+            
+            $scope.onDropCompleteRemove = function(data, evt,dropArea) {
+                if(!data || dropArea == $scope.area1) {
+                    return;
+                }
+                var obj1 = _.pluck($scope.listItems,'id')
+                var index = obj1.indexOf(data.id);
+
+              if (index == -1)
+                $scope.listItems.splice(0,0,data);
+                $scope.listItems1.splice($scope.index3,1);
+            }
+     };
+     
+</script> 
+</html>
